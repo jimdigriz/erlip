@@ -60,7 +60,7 @@ Provides lists of IP ranges you may find useful.
 
 [RFC 6890](https://tools.ietf.org/html/rfc6890) (superset of [RFC 1918](https://tools.ietf.org/html/rfc1918)) provides a list useful for filtering addresses you should never see:
 
-    1> erlip_range:rfc6890().
+    1> erlip_list:rfc6890().
 
 # Development
 
