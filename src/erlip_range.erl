@@ -3,6 +3,7 @@
 -export([new/0]).
 -export([from_list/1]).
 -export([insert/2]).
+-export([merge/1]).
 -export([contains/2]).
 
 -type range() :: gb_trees:gb_tree().
@@ -21,7 +22,7 @@ from_list(Range = [IP|_]) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 
 -spec insert(ip() | list(ip() | {ip(),ip()}), range()) -> range().
 insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
-	lists:foldl(fun
+	gb_trees:balance(lists:foldl(fun
 		(I = {S,E}, T) when is_tuple(S), is_tuple(E), size(S) == size(E) ->
 			S = to_ip_address(S),
 			E = to_ip_address(E),
@@ -31,9 +32,15 @@ insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 		(I, T) when is_tuple(I) ->
 			I = to_ip_address(I),
 			insert2({I,I}, T)
-	end, Tree, Range);
+	end, Tree, Range));
 insert(IP, Tree) ->
 	insert([IP], Tree).
+
+-spec merge(list(range())) -> range().
+merge(Trees) when is_list(Trees) ->
+	gb_trees:balance(lists:foldl(fun(T, TT) ->
+		merge2(gb_trees:next(gb_trees:iterator(T)), TT)
+	end, new(), Trees)).
 
 % http://erlang.org/pipermail/erlang-questions/2015-November/thread.html#86776
 contains(IP, Tree) when is_binary(IP), is_list(IP) ->
@@ -52,6 +59,11 @@ insert2({Start, End}, Tree, {XEnd, XStart, _}) when XStart =< Start, End >= XEnd
 	insert2({XStart, End}, gb_trees:delete(XEnd, Tree));
 insert2({Start, End}, Tree, _) ->
 	gb_trees:insert(End, Start, Tree).
+
+merge2({End, Start, Iter}, Tree) ->
+	merge2(gb_trees:next(Iter), insert2({Start, End}, Tree));
+merge2(none, Tree) ->
+	Tree.
 
 cidr2range(CIDR) when is_binary(CIDR) ->
 	[IP|Mask0] = binary:split(CIDR, <<"/">>),
