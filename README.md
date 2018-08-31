@@ -31,6 +31,14 @@ You can also merge ranges:
     4> RangeB = erlip_range:insert(["2001:db8::/32",{{203,0,113,0},{203,0,113,255}}], RangeB0).
     5) Range = erlip_range:merge([RangeA,RangeB]).
 
+## `erlip_list`
+
+Provides lists of IP ranges you may find useful.
+
+[RFC 6890](https://tools.ietf.org/html/rfc6890) (superset of [RFC 1918](https://tools.ietf.org/html/rfc1918)) provides a list useful for filtering addresses you should never see:
+
+    1> erlip_range:rfc6890().
+
 # Development
 
 You can get a prompt
