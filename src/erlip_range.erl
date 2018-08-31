@@ -42,7 +42,7 @@ merge(Trees) when is_list(Trees) ->
 
 % http://erlang.org/pipermail/erlang-questions/2015-November/thread.html#86776
 -spec contains(erlip:ip(), range()) -> boolean().
-contains(IP, Tree) when is_binary(IP), is_list(IP) ->
+contains(IP, Tree) ->
 	IPAddress = erlip:to_ip_address(IP),
 	contains(IPAddress, Tree, gb_trees:next(gb_trees:iterator_from(IPAddress, Tree))).
 
