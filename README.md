@@ -11,6 +11,27 @@ Add to your `Makefile`:
 
 # Usage
 
+## `erlip`
+
+Contains a number of useful helpers:
+
+You can convert an IP into an [`inet:ip_address()`](http://erlang.org/doc/man/inet.html#data-types)
+
+    1> erlip:to_ip_address(<<"192.0.2.1">>).
+    {192,0,2,1}
+
+You can get the IP version:
+
+    1> erlip:version(<<"192.0.2.1">>).
+    4
+    2> erlip:version("2001:db8:735e:1:6c9b:c6a9:a3c0:f136").
+    6
+
+You can use obtain your external IPv4 address:
+
+    1> erlip:external().
+    {192,0,2,1}
+
 ## `erlip_range`
 
 An IP range structure implemented using [`gb_trees`](http://erlang.org/doc/man/gb_trees.html); a use case is as an IP blacklist checker.

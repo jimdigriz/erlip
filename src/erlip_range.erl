@@ -7,30 +7,28 @@
 -export([contains/2]).
 
 -type range() :: gb_trees:gb_tree().
--type ip() :: inet:ip_address() | string().
 
 -export_type([range/0]).
--export_type([ip/0]).
 
 -spec new() -> range().
 new() ->
 	gb_trees:empty().
 
--spec from_list(list(ip() | {ip(),ip()})) -> range().
+-spec from_list(list(erlip:ip() | {erlip:ip(),erlip:ip()})) -> range().
 from_list(Range = [IP|_]) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 	insert(Range, new()).
 
--spec insert(ip() | list(ip() | {ip(),ip()}), range()) -> range().
+-spec insert(erlip:ip() | list(erlip:ip() | {erlip:ip(),erlip:ip()}), range()) -> range().
 insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 	gb_trees:balance(lists:foldl(fun
 		(I = {S,E}, T) when is_tuple(S), is_tuple(E), size(S) == size(E) ->
-			S = to_ip_address(S),
-			E = to_ip_address(E),
+			S = erlip:to_ip_address(S),
+			E = erlip:to_ip_address(E),
 			insert2(I, T);
 		(I, T) when is_binary(I); is_list(I) ->
 			insert2(cidr2range(I), T);
 		(I, T) when is_tuple(I) ->
-			I = to_ip_address(I),
+			I = erlip:to_ip_address(I),
 			insert2({I,I}, T)
 	end, Tree, Range));
 insert(IP, Tree) ->
@@ -43,8 +41,9 @@ merge(Trees) when is_list(Trees) ->
 	end, new(), Trees)).
 
 % http://erlang.org/pipermail/erlang-questions/2015-November/thread.html#86776
+-spec contains(erlip:ip(), range()) -> boolean().
 contains(IP, Tree) when is_binary(IP), is_list(IP) ->
-	IPAddress = to_ip_address(IP),
+	IPAddress = erlip:to_ip_address(IP),
 	contains(IPAddress, Tree, gb_trees:next(gb_trees:iterator_from(IPAddress, Tree))).
 
 %%
@@ -67,7 +66,7 @@ merge2(none, Tree) ->
 
 cidr2range(CIDR) when is_binary(CIDR) ->
 	[IP|Mask0] = binary:split(CIDR, <<"/">>),
-	IPAddress = to_ip_address(IP),
+	IPAddress = erlip:to_ip_address(IP),
 	Mask = case Mask0 of
 		[] when size(IPAddress) == 4 ->
 			<<"32">>;
@@ -91,15 +90,6 @@ cidr2range({Low,High}, Mask) ->
 	cidr2range({Low, High ++ [trunc(math:pow(2, Mask2)) - 1]}, Mask + Mask2);
 cidr2range(Subnet, Mask) ->
 	cidr2range({Subnet,[]}, Mask).
-
-to_ip_address(IP) when is_binary(IP) ->
-	to_ip_address(binary_to_list(IP));
-to_ip_address(IP) when is_list(IP) ->
-	{ok, IPAddress} = inet:parse_strict_address(IP),
-	to_ip_address(IPAddress);
-to_ip_address(IPAddress) ->
-	false = is_tuple(inet:ntoa(IPAddress)),
-	IPAddress.
 
 contains(_IP, _Tree, none) ->
 	false;
