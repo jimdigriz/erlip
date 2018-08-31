@@ -2,6 +2,8 @@ Erlang IP Address Library.
 
 # Preflight
 
+    git clone https://gitlab.com/jimdigriz/erlip.git
+
 ## `erlang.mk`
 
 Add to your `Makefile`:
