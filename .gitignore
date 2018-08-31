@@ -1,0 +1,10 @@
+.*
+!.gitignore
+!.gitattributes
+
+*.tmp
+*.bak
+
+*.d
+ebin
+deps
