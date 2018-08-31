@@ -3,9 +3,9 @@
 -export([new/0]).
 -export([from_list/1]).
 -export([insert/2]).
+-export([gc/1]).
 -export([merge/1]).
 -export([contains/2]).
--export([gc/1]).
 
 -type range() :: gb_trees:gb_tree().
 
