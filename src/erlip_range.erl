@@ -5,6 +5,7 @@
 -export([insert/2]).
 -export([merge/1]).
 -export([contains/2]).
+-export([gc/1]).
 
 -type range() :: gb_trees:gb_tree().
 
@@ -20,7 +21,7 @@ from_list(Range = [IP|_]) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 
 -spec insert(erlip:ip() | list(erlip:ip() | {erlip:ip(),erlip:ip()}), range()) -> range().
 insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
-	gb_trees:balance(lists:foldl(fun
+	lists:foldl(fun
 		(I = {S,E}, T) when is_tuple(S), is_tuple(E), size(S) == size(E) ->
 			S = erlip:to_ip_address(S),
 			E = erlip:to_ip_address(E),
@@ -30,13 +31,17 @@ insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 		(I, T) when is_tuple(I) ->
 			I = erlip:to_ip_address(I),
 			insert2({I,I}, T)
-	end, Tree, Range));
+	end, Tree, Range);
 insert(IP, Tree) ->
 	insert([IP], Tree).
 
+-spec gc(range()) -> range().
+gc(Range) ->
+	gb_trees:balance(Range).
+
 -spec merge(list(range())) -> range().
 merge(Trees) when is_list(Trees) ->
-	gb_trees:balance(lists:foldl(fun(T, TT) ->
+	gc(lists:foldl(fun(T, TT) ->
 		merge2(gb_trees:next(gb_trees:iterator(T)), TT)
 	end, new(), Trees)).
 

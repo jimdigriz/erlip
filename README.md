@@ -46,6 +46,10 @@ An IP range structure implemented using [`gb_trees`](http://erlang.org/doc/man/g
     4> erlip_range:contains("2001:db8:735e:1:6c9b:c6a9:a3c0:f136", Range).
     true
 
+After doing many (overlapping) inserts, you should garbage collect the range:
+
+    Range = erlip_range:gc(Range0).
+
 You can also merge ranges:
 
     1> RangeA0 = erlip_range:new().
@@ -53,6 +57,8 @@ You can also merge ranges:
     3> RangeB0 = erlip_range:new().
     4> RangeB = erlip_range:insert(["2001:db8::/32",{{203,0,113,0},{203,0,113,255}}], RangeB0).
     5) Range = erlip_range:merge([RangeA,RangeB]).
+
+**N.B.** merge automatically runs a garbge collection before returning
 
 ## `erlip_list`
 
