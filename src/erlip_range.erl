@@ -27,7 +27,7 @@ insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 			E = erlip:to_ip_address(E),
 			insert2(I, T);
 		(I, T) when is_binary(I); is_list(I) ->
-			insert2(cidr2range(I), T);
+			insert2(erlip:to_ip_range(I), T);
 		(I, T) when is_tuple(I) ->
 			I = erlip:to_ip_address(I),
 			insert2({I,I}, T)
@@ -68,33 +68,6 @@ merge2({End, Start, Iter}, Tree) ->
 	merge2(gb_trees:next(Iter), insert2({Start, End}, Tree));
 merge2(none, Tree) ->
 	Tree.
-
-cidr2range(CIDR) when is_binary(CIDR) ->
-	[IP|Mask0] = binary:split(CIDR, <<"/">>),
-	IPAddress = erlip:to_ip_address(IP),
-	Mask = case Mask0 of
-		[] when size(IPAddress) == 4 ->
-			<<"32">>;
-		[] when size(IPAddress) == 8 ->
-			<<"128">>;
-		[M] ->
-			M
-	end,
-	cidr2range(IPAddress, binary_to_integer(Mask));
-cidr2range(CIDR) when is_list(CIDR) ->
-	cidr2range(list_to_binary(CIDR)).
-cidr2range({Low,High}, Mask) when size(Low) == 8 andalso Mask == 128; size(Low) == 4 andalso Mask == 32 ->
-	MaskRange = lists:map(fun(_) -> 0 end, lists:seq(1,size(Low)-length(High))) ++ High,
-	Range = trunc(math:pow(2, 2*size(Low))) - 1,
-	Low2 = lists:zipwith(fun(X, Y) -> X band (Range - Y) end, tuple_to_list(Low), MaskRange),
-	High2 = lists:zipwith(fun(X, Y) -> X + Y end, Low2, MaskRange),
-	{list_to_tuple(Low2),list_to_tuple(High2)};
-cidr2range({Low,High}, Mask) ->
-	Width = size(Low) * 2,
-	Mask2 = Width - Mask rem Width,
-	cidr2range({Low, High ++ [trunc(math:pow(2, Mask2)) - 1]}, Mask + Mask2);
-cidr2range(Subnet, Mask) ->
-	cidr2range({Subnet,[]}, Mask).
 
 contains(_IP, _Tree, none) ->
 	false;
