@@ -41,6 +41,6 @@ Provides lists of IP ranges you may find useful.
 
 # Development
 
-You can get a prompt
+To quickly get a prompt to start playing with this:
 
     make all shell
