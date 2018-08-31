@@ -34,10 +34,12 @@ You can get the IP version:
     2> erlip:version("2001:db8:735e:1:6c9b:c6a9:a3c0:f136").
     6
 
-You can obtain your external IPv4 address:
+You can obtain your external address:
 
-    1> erlip:external().
+    1> erlip:external().	% same as erlip:external(ipv4).
     {192,0,2,1}
+    2> erlip:external(ipv6).
+    {8193,3512,29534,1,27803,50857,41920,61750}
 
 ## `erlip_range`
 

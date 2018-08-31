@@ -3,7 +3,7 @@
 -export([to_ip_address/1]).
 -export([to_ip_range/1]).
 -export([version/1]).
--export([external/0]).
+-export([external/0, external/1]).
 
 -type ip() :: inet:ip_address() | string().
 
@@ -55,16 +55,34 @@ version(IP) ->
 		X when X == 8 -> 6
 	end.
 
+% https://code.blogs.iiidefix.net/posts/get-public-ip-using-dns/
 -spec external() -> inet:ip_address().
 external() ->
-	% dig TXT o-o.myaddr.l.google.com @ns1.google.com
+	external(ipv4).
+
+-spec external(ipv4 | ipv6) -> inet:ip_address().
+% dig -4 TXT o-o.myaddr.l.google.com @ns1.google.com
+external(ipv4) ->
 	Targets = ["ns1.google.com", "ns2.google.com", "ns3.google.com", "ns4.google.com"],
 	Keys = lists:map(fun(X) -> rpc:async_call(node(), inet_res, lookup, [X, in, a]) end, Targets),
 	NS = lists:map(fun(X) -> {X,53} end, lists:flatmap(fun(X) -> rpc:yield(X) end, Keys)),
-	RR = inet_res:lookup("o-o.myaddr.l.google.com", in, txt, [{nameservers,NS}]),
+	external("o-o.myaddr.l.google.com", txt, NS);
+% dig -6 AAAA myip.opendns.com @resolver1.ipv6-sandbox.opendns.com
+external(ipv6) ->
+	Targets = ["resolver1.ipv6-sandbox.opendns.com", "resolver1.ipv6-sandbox.opendns.com"],
+	Keys = lists:map(fun(X) -> rpc:async_call(node(), inet_res, lookup, [X, in, aaaa]) end, Targets),
+	NS = lists:map(fun(X) -> {X,53} end, lists:flatmap(fun(X) -> rpc:yield(X) end, Keys)),
+	external("myip.opendns.com", aaaa, NS).
+
+%%
+
+external(H, Type, NS) ->
+	RR = inet_res:lookup(H, in, Type, [{nameservers,NS}]),
 	case RR of
 		[] ->
 			undefined;
-		[[X]] ->
-			to_ip_address(X)
+		[[X]] ->	% txt
+			to_ip_address(X);
+		[X] ->		% a | aaaa
+			X
 	end.
