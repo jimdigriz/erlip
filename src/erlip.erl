@@ -60,11 +60,7 @@ external() ->
 	% dig TXT o-o.myaddr.l.google.com @ns1.google.com
 	Targets = ["ns1.google.com", "ns2.google.com", "ns3.google.com", "ns4.google.com"],
 	Keys = lists:map(fun(X) -> rpc:async_call(node(), inet_res, lookup, [X, in, a]) end, Targets),
-	Results = lists:map(fun(X) -> rpc:yield(X) end, Keys),
-	NS = lists:filtermap(fun
-		([I]) when is_tuple(I) -> {true, {I,53}};
-		(_) -> false
-	end, Results),
+	NS = lists:map(fun(X) -> {X,53} end, lists:flatmap(fun(X) -> rpc:yield(X) end, Keys)),
 	RR = inet_res:lookup("o-o.myaddr.l.google.com", in, txt, [{nameservers,NS}]),
 	case RR of
 		[] ->
