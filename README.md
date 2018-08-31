@@ -26,7 +26,7 @@ An IP range structure implemented using [`gb_trees`](http://erlang.org/doc/man/g
 You can also merge ranges:
 
     1> RangeA0 = erlip_range:new().
-    2> RangeA = erlip_range:insert("192.0.2.0/24", RangeA0).
+    2> RangeA = erlip_range:insert(<<"192.0.2.0/24">>, RangeA0).
     3> RangeB0 = erlip_range:new().
     4> RangeB = erlip_range:insert(["2001:db8::/32",{{203,0,113,0},{203,0,113,255}}], RangeB0).
     5) Range = erlip_range:merge([RangeA,RangeB]).
