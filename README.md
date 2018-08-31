@@ -1,8 +1,10 @@
 Erlang IP Address Library.
 
-A CIDR structure implemented using gb_trees; a use case is as an IP blacklist checker.
-
 # Usage
+
+## `erlip_range`
+
+An IP range structure implemented using [`gb_trees`](http://erlang.org/doc/man/gb_trees.html); a use case is as an IP blacklist checker.
 
     1> Range = erlip_range:from_list(["192.0.2.0/24", <<"198.51.100.0/24">>, {{203,0,113,0},{203,0,113,255}}, "2001:db8::/32"]).
     2> erlip_range:contains("192.0.2.1", Range).
