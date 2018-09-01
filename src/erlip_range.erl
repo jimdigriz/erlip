@@ -22,11 +22,11 @@ from_list(Range = [IP|_]) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 -spec insert(erlip:ip() | list(erlip:ip() | {erlip:ip(),erlip:ip()}), range()) -> range().
 insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 	lists:foldl(fun
-		(I = {S0,E0}, T) ->
+		({S0,E0}, T) ->
 			S = erlip:to_ip_address(S0),
 			E = erlip:to_ip_address(E0),
 			true = size(S) == size(E) andalso E > S,
-			insert2(I, T);
+			insert2({S,E}, T);
 		(I, T) when is_binary(I); is_list(I) ->
 			insert2(erlip:to_ip_range(I), T);
 		(I, T) when is_tuple(I) ->
