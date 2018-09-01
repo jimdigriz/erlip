@@ -25,7 +25,7 @@ insert(Range = [IP|_], Tree) when is_binary(IP); is_list(IP); is_tuple(IP) ->
 		({S0,E0}, T) ->
 			S = erlip:to_ip_address(S0),
 			E = erlip:to_ip_address(E0),
-			true = size(S) == size(E) andalso E > S,
+			true = size(S) == size(E) andalso E >= S,
 			insert2({S,E}, T);
 		(I, T) when is_binary(I); is_list(I) ->
 			insert2(erlip:to_ip_range(I), T);
