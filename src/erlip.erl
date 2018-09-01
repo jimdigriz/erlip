@@ -25,13 +25,13 @@ to_ip_range(CIDR) when is_binary(CIDR) ->
 	IPAddress = to_ip_address(IP),
 	Mask = case Mask0 of
 		[] when size(IPAddress) == 4 ->
-			<<"32">>;
+			32;
 		[] when size(IPAddress) == 8 ->
-			<<"128">>;
+			128;
 		[M] ->
-			M
+			binary_to_integer(M)
 	end,
-	to_ip_range(IPAddress, binary_to_integer(Mask));
+	to_ip_range(IPAddress, Mask);
 to_ip_range(CIDR) when is_list(CIDR) ->
 	to_ip_range(list_to_binary(CIDR)).
 to_ip_range({Low,High}, Mask) when size(Low) == 8 andalso Mask == 128; size(Low) == 4 andalso Mask == 32 ->
