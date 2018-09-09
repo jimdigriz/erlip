@@ -42,9 +42,9 @@ gc(Range) ->
 
 -spec merge(list(range())) -> range().
 merge(Trees) when is_list(Trees) ->
-	gc(lists:foldl(fun(T, TT) ->
+	lists:foldl(fun(T, TT) ->
 		merge2(gb_trees:next(gb_trees:iterator(T)), TT)
-	end, new(), Trees)).
+	end, new(), Trees).
 
 % http://erlang.org/pipermail/erlang-questions/2015-November/thread.html#86776
 -spec contains(erlip:ip(), range()) -> boolean().
