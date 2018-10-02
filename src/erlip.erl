@@ -16,7 +16,7 @@ to_ip_address(IP) when is_list(IP) ->
 	{ok, IPAddress} = inet:parse_strict_address(IP),
 	to_ip_address(IPAddress);
 to_ip_address(IPAddress) ->
-	false = is_tuple(inet:ntoa(IPAddress)),
+	true = is_list(inet:ntoa(IPAddress)),
 	IPAddress.
 
 -spec to_ip_range(string()) -> {inet:ip_address(),inet:ip_address()}.
