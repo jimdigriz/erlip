@@ -14,7 +14,7 @@ to_ip_address(IP) when is_binary(IP) ->
 	to_ip_address(binary_to_list(IP));
 to_ip_address(IP) when is_list(IP) ->
 	{ok, IPAddress} = inet:parse_strict_address(IP),
-	to_ip_address(IPAddress);
+	IPAddress;
 to_ip_address(IPAddress) ->
 	true = is_list(inet:ntoa(IPAddress)),
 	IPAddress.
