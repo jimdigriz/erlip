@@ -41,6 +41,8 @@ You can obtain your external address:
     2> erlip:external(ipv6).
     {8193,3512,29534,1,27803,50857,41920,61750}
 
+**N.B.** your DNS request may be subject to [local privacy policies and truncated](https://tools.ietf.org/html/rfc7871#section-11.1)
+
 ## `erlip_range`
 
 An IP range structure implemented using [`gb_trees`](http://erlang.org/doc/man/gb_trees.html); a use case is as an IP blacklist checker.

@@ -83,6 +83,10 @@ external(H, Type, NS) ->
 			undefined;
 		[[X]] ->	% txt
 			to_ip_address(X);
+		[_,["edns0-client-subnet " ++ X0]] ->	% [["2a04:e4c0:12::64"],["edns0-client-subnet 185.200.146.0/24"]]
+			[X|_] = string:split(X0, "/"),
+			to_ip_address(X);
+
 		[X] ->		% a | aaaa
 			X
 	end.
