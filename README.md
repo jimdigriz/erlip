@@ -90,7 +90,7 @@ A [large list (no overlaps and pre-aggregated) with ~110k entries](http://www.te
     6> length(L).
     110700
     
-    7> {T, R} = timer:tc(fun() -> erlip_range:from_list(L) end).
+    7> {_, R} = timer:tc(fun() -> erlip_range:from_list(L) end).
     {1497520, ...}      <--- 1500ms
 
     8> gb_trees:size(R).
