@@ -61,6 +61,11 @@ An IP range structure implemented using [`gb_trees`](http://erlang.org/doc/man/g
     4> erlip_range:contains("2001:db8:735e:1:6c9b:c6a9:a3c0:f136", Range).
     true
 
+You can also just pass in a list of IPs to `erlip_range:contains/2`:
+
+    1> erlip_range:contains(<<"192.168.1.1">>, [<<"192.168.0.0/16">>]).
+    true
+
 After doing many (overlapping) inserts, you should garbage collect the range:
 
     Range = erlip_range:gc(Range0).
