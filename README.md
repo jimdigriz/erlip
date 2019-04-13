@@ -71,7 +71,7 @@ You can also merge ranges:
 
 ### Performance
 
-A large list (no overlaps and pre-aggregated) with ~40k entries on an [Intel i7-8550U](https://ark.intel.com/content/www/us/en/ark/products/122589/intel-core-i7-8550u-processor-8m-cache-up-to-4-00-ghz.html) I get the following results:
+A large list (no overlaps and pre-aggregated) with ~40k entries using an single core of a [Intel i7-8550U](https://ark.intel.com/content/www/us/en/ark/products/122589/intel-core-i7-8550u-processor-8m-cache-up-to-4-00-ghz.html) I get the following results:
 
     1> {ok, F} = file:read_file("list").
     {ok,<<"52.215.197.128/27\r\n178.174.40.176/30\r\n195.12.50.236/31\r\n...>>}
