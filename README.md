@@ -73,7 +73,7 @@ You can also merge ranges:
     4> RangeB = erlip_range:insert(["2001:db8::/32",{{203,0,113,0},{203,0,113,255}}], RangeB0).
     5) Range = erlip_range:merge([RangeA,RangeB]).
 
-**N.B.** you should call `gc/1` after using merge
+**N.B.** you should call `erlip_range:gc/1` after using merge
 
 ### Performance
 
