@@ -71,27 +71,35 @@ You can also merge ranges:
 
 ### Performance
 
-A large list (no overlaps and pre-aggregated) with ~40k entries using an single core of a [Intel i7-8550U](https://ark.intel.com/content/www/us/en/ark/products/122589/intel-core-i7-8550u-processor-8m-cache-up-to-4-00-ghz.html) I get the following results:
+A [large list (no overlaps and pre-aggregated) with ~110k entries](http://www.team-cymru.com/bogon-reference-http.html) using an single core of a [Intel i7-8550U](https://ark.intel.com/content/www/us/en/ark/products/122589/intel-core-i7-8550u-processor-8m-cache-up-to-4-00-ghz.html) I get the following results:
 
-    1> {ok, F} = file:read_file("list").
-    {ok,<<"52.215.197.128/27\r\n178.174.40.176/30\r\n195.12.50.236/31\r\n...>>}
+    $ curl -fLOJ https://www.team-cymru.org/Services/Bogons/fullbogons-ipv4.txt
+    $ curl -fLOJ https://www.team-cymru.org/Services/Bogons/fullbogons-ipv6.txt
     
-    2> L = lists:droplast(binary:split(F, <<"\r\n">>, [global])).
-    [<<"52.215.197.128/27">>,<<"178.174.40.176/30">>,<<"195.12.50.236/31">>|...]
+    1> {ok, F1} = file:read_file("fullbogons-ipv4.txt").
+    {ok,<<"...>>}
+    2> {ok, F2} = file:read_file("fullbogons-ipv6.txt").
+    {ok,<<"...>>}
     
-    3> length(L).
-    41263
+    3> L1 = lists:droplast(tl(binary:split(F1, <<"\n">>, [global]))).
+    [<<"...>>|...]
+    4> L2 = lists:droplast(tl(binary:split(F2, <<"\n">>, [global]))).
+    [<<"...>>|...]
+    5> L = L1 ++ L2.
     
-    4> {T, R} = timer:tc(fun() -> erlip_range:from_list(L) end).
-    {282375, ...}       <--- 280ms
+    6> length(L).
+    110700
     
-    5> gb_trees:size(R).
-    41263
+    7> {T, R} = timer:tc(fun() -> erlip_range:from_list(L) end).
+    {1497520, ...}      <--- 1500ms
+
+    8> gb_trees:size(R).
+    110700
     
-    6> timer:tc(fun() -> erlip_range:contains({1,2,3,4}, R) end).
+    9> timer:tc(fun() -> erlip_range:contains({1,2,3,4}, R) end).
     {29,false}          <--- 0.03ms
     
-    7> timer:tc(fun() -> erlip_range:contains({109,200,217,123}, R) end).
+    10> I = erlip:to_ip_address("2400:dbd0::"), timer:tc(fun() -> erlip_range:contains(I, R) end).
     {31,true}           <--- 0.03ms
 
 ## `erlip_list`
