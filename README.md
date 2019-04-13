@@ -11,6 +11,12 @@ Add to your `Makefile`:
     DEPS += erlip
     dep_erlip = git https://gitlab.com/jimdigriz/erlip.git master
 
+# Development
+
+To quickly get a prompt to start playing with this:
+
+    make all shell
+
 # Usage
 
 ## `erlip`
@@ -109,9 +115,3 @@ Provides lists of IP ranges you may find useful.
 [RFC 6890](https://tools.ietf.org/html/rfc6890) (superset of [RFC 1918](https://tools.ietf.org/html/rfc1918)) provides a list useful for filtering addresses you should never see:
 
     1> erlip_list:rfc6890().
-
-# Development
-
-To quickly get a prompt to start playing with this:
-
-    make all shell
