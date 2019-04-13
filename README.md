@@ -83,16 +83,16 @@ A large list (no overlaps and pre-aggregated) with ~40k entries on an [Intel i7-
     41263
     
     4> {T, R} = timer:tc(fun() -> erlip_range:from_list(L) end).
-    {282375, ...}	<--- 280ms
+    {282375, ...}       <--- 280ms
     
     5> gb_trees:size(R).
     41263
     
     6> timer:tc(fun() -> erlip_range:contains({1,2,3,4}, R) end).
-    {29,false}		<--- 0.03ms
+    {29,false}          <--- 0.03ms
     
     7> timer:tc(fun() -> erlip_range:contains({109,200,217,123}, R) end).
-    {31,true}		<--- 0.03ms
+    {31,true}           <--- 0.03ms
 
 ## `erlip_list`
 
