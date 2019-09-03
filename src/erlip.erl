@@ -19,7 +19,7 @@ to_ip_address("::ffff:" ++ IP) ->
 to_ip_address(IP) when is_list(IP) ->
 	{ok, IPAddress} = inet:parse_strict_address(IP),
 	IPAddress;
-to_ip_address({0,0,0,0,0,65535,X,Y}) when is_integer(X), X >= 0, X < 65536, is_integer(Y), Y >= 0, Y < 65536 ->
+to_ip_address({0,0,0,0,0,65535,X,Y}) ->
 	to_ip_address({X div 256, X rem 256, Y div 256, Y rem 256});
 to_ip_address(IPAddress) ->
 	true = is_list(inet:ntoa(IPAddress)),
