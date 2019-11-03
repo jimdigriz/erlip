@@ -22,9 +22,9 @@ to_ip_address(IP) when is_list(IP) ->
 to_ip_address({0,0,0,0,0,65535,X,Y}) ->
 	to_ip_address({X div 256, X rem 256, Y div 256, Y rem 256});
 to_ip_address(IP) when is_integer(IP), IP >= 0, IP < 4294967296 ->
-        to_ip_address(list_to_tuple([(IP bsr X) rem 256 || X <- lists:seq(24, -1, -8)]));
+        to_ip_address(list_to_tuple([(IP bsr X) rem 256 || X <- lists:seq(32 - 8, -1, -8)]));
 to_ip_address(IP) when is_integer(IP), IP > 4294967296 ->
-	to_ip_address(list_to_tuple([(IP bsr X) rem 65536 || X <- lists:seq(128, -1, -16)]));
+	to_ip_address(list_to_tuple([(IP bsr X) rem 65536 || X <- lists:seq(128 - 16, -1, -16)]));
 to_ip_address(IPAddress) ->
 	true = is_list(inet:ntoa(IPAddress)),
 	IPAddress.
