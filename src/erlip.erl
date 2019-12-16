@@ -11,22 +11,20 @@
 
 -spec to_ip_address(erlip:ip()) -> inet:ip_address().
 to_ip_address(<<"::ffff:", IP/binary>>) ->
-	to_ip_address(IP);
+	inet:ipv4_mapped_ipv6_address(to_ip_address(IP));
+to_ip_address("::ffff:" ++ IP) ->
+	inet:ipv4_mapped_ipv6_address(to_ip_address(IP));
 to_ip_address(IP) when is_binary(IP) ->
 	to_ip_address(binary_to_list(IP));
-to_ip_address("::ffff:" ++ IP) ->
-	to_ip_address(IP);
 to_ip_address(IP) when is_list(IP) ->
 	{ok, IPAddress} = inet:parse_strict_address(IP),
 	IPAddress;
-to_ip_address({0,0,0,0,0,65535,X,Y}) ->
-	to_ip_address({X div 256, X rem 256, Y div 256, Y rem 256});
 to_ip_address(IP) when is_integer(IP), IP >= 0, IP < 4294967296 ->
         to_ip_address(list_to_tuple([(IP bsr X) rem 256 || X <- lists:seq(32 - 8, -1, -8)]));
 to_ip_address(IP) when is_integer(IP), IP > 4294967296 ->
 	to_ip_address(list_to_tuple([(IP bsr X) rem 65536 || X <- lists:seq(128 - 16, -1, -16)]));
-to_ip_address(IPAddress) ->
-	true = is_list(inet:ntoa(IPAddress)),
+to_ip_address(IPAddress) when is_tuple(IPAddress) ->
+	{ok, IPAddress} = inet:parse_strict_address(inet:ntoa(IPAddress)),
 	IPAddress.
 
 -spec to_ip_range(string()) -> {inet:ip_address(),inet:ip_address()}.
