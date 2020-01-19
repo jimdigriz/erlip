@@ -60,18 +60,16 @@ to_ip_range(Subnet, Mask) ->
 to_integer(IP) ->
 	IPAddress = to_ip_address(IP),
 	case size(IPAddress) of
-		S when S == 4 ->
-			lists:sum([ element(4 - (X div  8), IPAddress) bsl X || X <- lists:seq(32 - 8, -1, -8) ]);
-		S when S == 8 ->
-			lists:sum([ element(8 - (X div 16), IPAddress) bsl X || X <- lists:seq(128 - 16, -1, -16) ])
+		4 -> lists:sum([ element(4 - (X div  8), IPAddress) bsl X || X <- lists:seq(32 - 8, -1, -8) ]);
+		8 -> lists:sum([ element(8 - (X div 16), IPAddress) bsl X || X <- lists:seq(128 - 16, -1, -16) ])
 	end.
 
 -spec version(erlip:ip()) -> 4 | 6.
 version(IP) ->
 	IPAddress = to_ip_address(IP),
 	case size(IPAddress) of
-		S when S == 4 -> 4;
-		S when S == 8 -> 6
+		4 -> 4;
+		8 -> 6
 	end.
 
 % https://code.blogs.iiidefix.net/posts/get-public-ip-using-dns/
