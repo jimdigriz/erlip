@@ -27,11 +27,20 @@ You can convert an IP into an [`inet:ip_address()`](http://erlang.org/doc/man/in
 
     1> erlip:to_ip_address(<<"192.0.2.1">>).
     {192,0,2,1}
+    2> erlip:to_ip_address(3221225985).
+    {192,0,2,1}
 
 You can convert a CIDR to a range:
 
     1> erlip:to_ip_range(<<"192.0.2.111/24">>).
     {{192,0,2,0},{192,0,2,255}}
+
+You can convert an IP to an integer:
+
+    1> erlip:to_integer({192,0,2,1}).
+    3221225985
+    2> erlip:to_integer("2001:db8:735e:1:6c9b:c6a9:a3c0:f136").
+    42540766446987008039675254280521052470
 
 You can get the IP version:
 
