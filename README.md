@@ -30,7 +30,7 @@ You can convert an IP into an [`inet:ip_address()`](http://erlang.org/doc/man/in
     2> erlip:to_ip_address(3221225985).
     {192,0,2,1}
 
-**N.B.** integers below 16777216 are not easy to rule if they should by IPv4 or IPv6, so they are rejected whilst integers 4294967296 or higher are considered IPv6 addresses
+**N.B.** integers below 16777216 are not clearly IPv4 or IPv6 so are rejected whilst the integers 4294967296 or higher are considered IPv6 addresses
 
 You can convert a CIDR to a range:
 
