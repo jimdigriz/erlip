@@ -20,7 +20,7 @@ to_ip_address(IP) when is_binary(IP) ->
 to_ip_address(IP) when is_list(IP) ->
 	{ok, IPAddress} = inet:parse_strict_address(IP),
 	IPAddress;
-to_ip_address(IP) when is_integer(IP), IP >= 0, IP < 4294967296 ->
+to_ip_address(IP) when is_integer(IP), IP >= 16777216, IP < 4294967296 ->	% 1.0.0.0 -> 255.255.255.255
         to_ip_address(list_to_tuple([(IP bsr X) rem 256 || X <- lists:seq(32 - 8, -1, -8)]));
 to_ip_address(IP) when is_integer(IP), IP > 4294967296 ->
 	to_ip_address(list_to_tuple([(IP bsr X) rem 65536 || X <- lists:seq(128 - 16, -1, -16)]));
