@@ -131,3 +131,5 @@ Provides lists of IP ranges you may find useful.
 [RFC 6890](https://tools.ietf.org/html/rfc6890) (superset of [RFC 1918](https://tools.ietf.org/html/rfc1918)) provides a list useful for filtering addresses you should never see:
 
     1> erlip_list:rfc6890().
+
+**N.B.** [RFC 8190](https://tools.ietf.org/html/rfc8190) updates this list and you can use get it via `erlip_list:rfc8190()`
