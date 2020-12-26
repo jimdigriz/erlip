@@ -84,13 +84,10 @@ external() ->
 external(ipv4) ->
 	external([{1,1,1,1},{1,0,0,1}]);
 external(ipv6) ->
-	external([{9734,18176,18176,0,0,0,0,4369},{9734,18176,18176,0,0,0,0,4097}]).
-
-%%
-
-external(NS0) ->
+	external([{9734,18176,18176,0,0,0,0,4369},{9734,18176,18176,0,0,0,0,4097}]);
+external(NS0) when is_list(NS0) ->
 	NS = lists:map(fun(X) -> {X,53} end, NS0),
-	RR = inet_res:lookup("whoami.cloudflare", ch, txt, [{nameservers,NS}]),
+	RR = inet_res:lookup("whoami.cloudflare", chaos, txt, [{nameservers,NS}]),
 	case RR of
 		[] ->
 			undefined;
