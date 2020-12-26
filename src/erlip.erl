@@ -82,10 +82,11 @@ external() ->
 % dig CH TXT whoami.cloudflare @2606:4700:4700::1111
 -spec external(ipv4 | ipv6) -> inet:ip_address().
 external(ipv4) ->
-	external([{1,1,1,1},{1,0,0,1}]);
+	external2([{1,1,1,1},{1,0,0,1}]);
 external(ipv6) ->
-	external([{9734,18176,18176,0,0,0,0,4369},{9734,18176,18176,0,0,0,0,4097}]);
-external(NS0) when is_list(NS0) ->
+	external2([{9734,18176,18176,0,0,0,0,4369},{9734,18176,18176,0,0,0,0,4097}]).
+
+external2(NS0) ->
 	NS = lists:map(fun(X) -> {X,53} end, NS0),
 	RR = inet_res:lookup("whoami.cloudflare", chaos, txt, [{nameservers,NS}]),
 	case RR of
