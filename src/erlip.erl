@@ -77,24 +77,20 @@ version(IP) ->
 external() ->
 	external(ipv4).
 
+% https://developers.cloudflare.com/1.1.1.1/
+% dig CH TXT whoami.cloudflare @1.1.1.1
+% dig CH TXT whoami.cloudflare @2606:4700:4700::1111
 -spec external(ipv4 | ipv6) -> inet:ip_address().
-% dig -4 TXT o-o.myaddr.l.google.com @ns1.google.com
 external(ipv4) ->
-	Targets = ["ns1.google.com", "ns2.google.com", "ns3.google.com", "ns4.google.com"],
-	Keys = lists:map(fun(X) -> rpc:async_call(node(), inet_res, lookup, [X, in, a]) end, Targets),
-	NS = lists:map(fun(X) -> {X,53} end, lists:flatmap(fun(X) -> rpc:yield(X) end, Keys)),
-	external("o-o.myaddr.l.google.com", txt, NS);
-% dig -6 AAAA myip.opendns.com @resolver1.ipv6-sandbox.opendns.com
+	external([{1,1,1,1},{1,0,0,1}]);
 external(ipv6) ->
-	Targets = ["resolver1.ipv6-sandbox.opendns.com", "resolver1.ipv6-sandbox.opendns.com"],
-	Keys = lists:map(fun(X) -> rpc:async_call(node(), inet_res, lookup, [X, in, aaaa]) end, Targets),
-	NS = lists:map(fun(X) -> {X,53} end, lists:flatmap(fun(X) -> rpc:yield(X) end, Keys)),
-	external("myip.opendns.com", aaaa, NS).
+	external([{9734,18176,18176,0,0,0,0,4369},{9734,18176,18176,0,0,0,0,4097}]).
 
 %%
 
-external(H, Type, NS) ->
-	RR = inet_res:lookup(H, in, Type, [{nameservers,NS}]),
+external(NS0) ->
+	NS = lists:map(fun(X) -> {X,53} end, NS0),
+	RR = inet_res:lookup("whoami.cloudflare", ch, txt, [{nameservers,NS}]),
 	case RR of
 		[] ->
 			undefined;
